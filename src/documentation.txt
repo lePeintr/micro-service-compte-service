@@ -1,0 +1,44 @@
+Comment créer un micro service
+1-Creer le projet maven avec ses dependances (la dependance lombock permer de génerer les getters et setters via l' annotation data)
+La dependance h2 pour tester la base de données
+2-créer les différents packages (entities,repositories,controller ou api ou web, mappers,dtos,enumerations,exceptions)
+3-créer les entities (@Entity et @Id @GeneratedValue(strategy = GenerationType.IDENTITY) pour les clés primaires,
+@Enumerated(EnumType.STRING):la valeur est stocké comme string dans la bd ou
+ @Enumerated(EnumType.ORDINAL):valeur par defaut et stock en 0,1,2 pour les attributs de types enumerations dans l'eentité)
+4-Créer les interfaces des entities dans le repositories car on utilise un couplage faibles
+5-Faire un test si les données d'une entities entités sont bien dans la base de donnée
+méthode 1
+Pour faire le test on va dans la classe application et on fait la classe implémenter CommandLineRunner :
+elle va impléménter une méthode run qui va faire que cette méthode s'execute automatiquement quand l'aapplication est exécutée
+méthode 2
+
+dans la classe application  on créé une méthode CommandLineRunner start() avec l'annotation @Bean sur la méthode
+@Bean sur les méthodde signifie qu'au démarrage Spring execute la méthode
+Si on veut tester les données en base d'une entité Entity la méthode start prend en paramètre un objet EntityRepository
+6-Pour la base de données de type h2 il faut configurer les informations dans applications.properties
+ visualiser la database avec http://localhost:nom_du_port_defini(8080 par défaut)/h2/console
+7- Après les tests on peut créer le RestController (avec les GET,POST,PUT,DELETE)de l'entity qui utiliser l'interface Repository de l'entité pour accéder à la BD
+et faire l'injection de dependance via le constructeur
+@RequestBody veut dire à Spring quand tu recois la requetes tu prends les information du corps de la requete et tu associes
+ à Entity passé  en parametre dans le POSTMAPPING savedCompte(@RequestBody Compte compte)
+
+8- test que le restController fonctionne vient
+Pour tester on utilise postman ou le swagger qui est la document openAPI (ajouter sa dépendance)
+Avec le swagger quand on lance l'application ou ouvre l'url
+Documentation fournie par doc openAI swagger : pour accéder http://localhost:8085(le port peut varier)/swagger-ui/index.html
+	http://localhost:8085/v3/api-docs cette url permet d'avoir la documentation
+	complète des methodes de l'API afin que l'utilisateurs de l'API sache tout sur les methodes
+
+9-Creation d'un web service avec la dependance Spring data Rest
+Avec Srpring data ta rest on n'a pas besoin de creer un RestContreller il faut juste mettre
+l'annotation @RepositoryRestRessource dans l'interface qui extends JPA  et Spring va comprendre qu'il doit demarrer un restController pour
+accéder à toutes les méthodes qui existent dans cet interface.
+ Ensuite la méthode start ajouter le parametre RepositoryRestConfiguration et dans le return avant de commencer les traitement,
+ il faut faire restConfiguration.exposeIdsFor(Enity.class);//en consultant un entity fourni moi aussi on id
+ La elle affiches avec plus de details par l'exemple les differents
+liens lié à l'entité
+
+
+
+
+
